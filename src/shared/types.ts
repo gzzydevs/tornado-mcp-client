@@ -31,3 +31,24 @@ export interface AppConfig {
     inactiveOpacity: number; // Opacity when inactive (default 30)
   };
 }
+
+// Re-export MCP types for convenience
+export type {
+  MCPTool,
+  MCPToolResult,
+  MCPResource,
+  MCPServerInfo,
+  MCPServerConfig,
+  MCPConnectionStatus,
+  MCPConnectionState,
+  SamplingStrategy,
+  ContextSamplingConfig,
+  SampledContext,
+  AIProvider,
+  AIModelConfig,
+  MCPConnectionMode,
+  MCPClientConfig,
+  MCPToolInvocation,
+  ChatMessage,
+  ChatSession,
+} from './mcp-types';
