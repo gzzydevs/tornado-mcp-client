@@ -154,8 +154,8 @@ Los siguientes hotkeys están disponibles y son personalizables desde la UI:
 En la sección de Hotkey Settings puedes:
 
 - Cambiar las combinaciones de teclas para cada acción
-- Ajustar la opacidad del modo activado (50-100%)
-- Ajustar la opacidad del modo inactivo (10-70%)
+- Ajustar la opacidad del modo activado (rango: 50-100%, predeterminado: 100%)
+- Ajustar la opacidad del modo inactivo (rango: 10-70%, predeterminado: 30%)
 - Ver el estado actual del overlay (activado/inactivo)
 
 Formatos de hotkey soportados:
