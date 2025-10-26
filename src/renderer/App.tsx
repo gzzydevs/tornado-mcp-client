@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import OverlayControls from './OverlayControls';
 import './App.css';
 
 function App() {
@@ -6,6 +7,8 @@ function App() {
 
   return (
     <div className="App">
+      <OverlayControls />
+      
       <header className="App-header">
         <h1>🌪️ Tornado MCP Client</h1>
         <p>Universal AI overlay for video games</p>
@@ -19,6 +22,9 @@ function App() {
         </div>
         <p className="info">
           Electron + React + TypeScript + Vite
+        </p>
+        <p className="overlay-info">
+          🎮 Transparent overlay with click-through support
         </p>
       </header>
     </div>

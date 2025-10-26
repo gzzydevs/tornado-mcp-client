@@ -26,6 +26,12 @@
   margin-bottom: 1.5rem;
 }
 
+.overlay-info {
+  font-size: 0.9em !important;
+  color: #64ff64 !important;
+  margin-top: 1rem !important;
+}
+
 .card {
   padding: 1.5rem;
   background-color: rgba(30, 30, 30, 0.5);
