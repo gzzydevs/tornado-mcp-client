@@ -156,3 +156,12 @@ vite.config.ts.timestamp-*
 # TypeScript compiled config files
 vite.config.js
 !vite.config.ts
+
+# Tornado MCP Client specific
+# Cache directory - ignore contents but keep structure
+cache/*
+!cache/README.md
+
+# MCPs directory - ignore installed MCPs but keep structure
+mcps/*
+!mcps/README.md
