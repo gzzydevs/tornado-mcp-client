@@ -17,6 +17,78 @@ let overlayConfig: OverlayConfig = {
   monitorIndex: 0,
 };
 
+// Register IPC handlers before creating window
+const registerIPCHandlers = () => {
+  // IPC handlers for overlay control
+  ipcMain.handle('overlay:get-config', () => {
+    return overlayConfig;
+  });
+
+  ipcMain.handle('overlay:set-opacity', (_event, opacity: number) => {
+    if (!mainWindow) return false;
+    overlayConfig.opacity = Math.max(0, Math.min(100, opacity));
+    mainWindow.setOpacity(overlayConfig.opacity / 100);
+    return true;
+  });
+
+  ipcMain.handle('overlay:set-click-through', (_event, enabled: boolean) => {
+    if (!mainWindow) return false;
+    overlayConfig.clickThrough = enabled;
+    
+    if (enabled) {
+      // Enable click-through on transparent areas
+      // forward-mouse makes clicks pass through on transparent areas
+      mainWindow.setIgnoreMouseEvents(true, { forward: true });
+    } else {
+      // Disable click-through
+      mainWindow.setIgnoreMouseEvents(false);
+    }
+    
+    return true;
+  });
+
+  ipcMain.handle('overlay:set-always-on-top', (_event, enabled: boolean) => {
+    if (!mainWindow) return false;
+    overlayConfig.alwaysOnTop = enabled;
+    mainWindow.setAlwaysOnTop(enabled);
+    return true;
+  });
+
+  ipcMain.handle('overlay:get-monitors', () => {
+    const displays = screen.getAllDisplays();
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const monitors: MonitorInfo[] = displays.map((display, index) => ({
+      id: index,
+      bounds: display.bounds,
+      isPrimary: display.id === primaryDisplay.id,
+    }));
+    return monitors;
+  });
+
+  ipcMain.handle('overlay:set-monitor', (_event, monitorIndex: number) => {
+    if (!mainWindow) return false;
+    const displays = screen.getAllDisplays();
+    
+    if (monitorIndex < 0 || monitorIndex >= displays.length) {
+      return false;
+    }
+    
+    const targetDisplay = displays[monitorIndex];
+    const { x, y, width, height } = targetDisplay.workArea;
+    
+    // Move window to the selected monitor
+    mainWindow.setBounds({
+      x: x + Math.floor((width - mainWindow.getBounds().width) / 2),
+      y: y + Math.floor((height - mainWindow.getBounds().height) / 2),
+      width: mainWindow.getBounds().width,
+      height: mainWindow.getBounds().height,
+    });
+    
+    overlayConfig.monitorIndex = monitorIndex;
+    return true;
+  });
+};
+
 const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
@@ -54,76 +126,9 @@ const createWindow = () => {
   });
 };
 
-// IPC handlers for overlay control
-ipcMain.handle('overlay:get-config', () => {
-  return overlayConfig;
-});
-
-ipcMain.handle('overlay:set-opacity', (_event, opacity: number) => {
-  if (!mainWindow) return false;
-  overlayConfig.opacity = Math.max(0, Math.min(100, opacity));
-  mainWindow.setOpacity(overlayConfig.opacity / 100);
-  return true;
-});
-
-ipcMain.handle('overlay:set-click-through', (_event, enabled: boolean) => {
-  if (!mainWindow) return false;
-  overlayConfig.clickThrough = enabled;
-  
-  if (enabled) {
-    // Enable click-through on transparent areas
-    // forward-mouse makes clicks pass through on transparent areas
-    mainWindow.setIgnoreMouseEvents(true, { forward: true });
-  } else {
-    // Disable click-through
-    mainWindow.setIgnoreMouseEvents(false);
-  }
-  
-  return true;
-});
-
-ipcMain.handle('overlay:set-always-on-top', (_event, enabled: boolean) => {
-  if (!mainWindow) return false;
-  overlayConfig.alwaysOnTop = enabled;
-  mainWindow.setAlwaysOnTop(enabled);
-  return true;
-});
-
-ipcMain.handle('overlay:get-monitors', () => {
-  const displays = screen.getAllDisplays();
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const monitors: MonitorInfo[] = displays.map((display, index) => ({
-    id: index,
-    bounds: display.bounds,
-    isPrimary: display.id === primaryDisplay.id,
-  }));
-  return monitors;
-});
-
-ipcMain.handle('overlay:set-monitor', (_event, monitorIndex: number) => {
-  if (!mainWindow) return false;
-  const displays = screen.getAllDisplays();
-  
-  if (monitorIndex < 0 || monitorIndex >= displays.length) {
-    return false;
-  }
-  
-  const targetDisplay = displays[monitorIndex];
-  const { x, y, width, height } = targetDisplay.workArea;
-  
-  // Move window to the selected monitor
-  mainWindow.setBounds({
-    x: x + Math.floor((width - mainWindow.getBounds().width) / 2),
-    y: y + Math.floor((height - mainWindow.getBounds().height) / 2),
-    width: mainWindow.getBounds().width,
-    height: mainWindow.getBounds().height,
-  });
-  
-  overlayConfig.monitorIndex = monitorIndex;
-  return true;
-});
-
 app.whenReady().then(() => {
+  // Register IPC handlers before creating window
+  registerIPCHandlers();
   createWindow();
 
   app.on('activate', () => {
