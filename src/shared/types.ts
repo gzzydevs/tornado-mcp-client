@@ -17,3 +17,17 @@ export interface MonitorInfo {
   };
   isPrimary: boolean;
 }
+
+export interface HotkeyConfig {
+  toggleActivatedMode: string; // e.g., 'F1' or 'CommandOrControl+Shift+I'
+  captureScreen: string; // e.g., 'F12' or 'CommandOrControl+Shift+S'
+}
+
+export interface AppConfig {
+  overlay: OverlayConfig;
+  hotkeys: HotkeyConfig;
+  activatedMode: {
+    opacity: number; // Opacity when activated (default 100)
+    inactiveOpacity: number; // Opacity when inactive (default 30)
+  };
+}

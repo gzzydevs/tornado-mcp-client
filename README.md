@@ -130,6 +130,39 @@ TORNADO_SENTRY_DSN=...
 - Botones de acción rápida por MCP activo
 - Indicadores de estado: MCP conectado, contexto cargado (savefile/screenshot/guía)
 
+
+## Sistema de Hotkeys Globales
+
+Tornado incluye un sistema de hotkeys globales personalizables para mejorar la experiencia de uso durante el juego.
+
+### Modo Activado (Activated Mode)
+
+El overlay tiene dos modos de operación que se pueden alternar con un hotkey:
+
+- **Modo Inactivo (por defecto)**: El overlay es click-through (los clics pasan a través) y tiene baja opacidad para no interferir con el juego
+- **Modo Activado**: El overlay se vuelve clickeable y aumenta su opacidad para permitir interacción completa
+
+### Hotkeys Configurables
+
+Los siguientes hotkeys están disponibles y son personalizables desde la UI:
+
+- **Toggle Activated Mode** (por defecto: `F1`): Alterna entre modo inactivo y activado
+- **Capture Screen** (por defecto: `F12`): Captura una screenshot para análisis por el MCP
+
+### Configuración de Hotkeys
+
+En la sección de Hotkey Settings puedes:
+
+- Cambiar las combinaciones de teclas para cada acción
+- Ajustar la opacidad del modo activado (rango: 50-100%, predeterminado: 100%)
+- Ajustar la opacidad del modo inactivo (rango: 10-70%, predeterminado: 30%)
+- Ver el estado actual del overlay (activado/inactivo)
+
+Formatos de hotkey soportados:
+- Teclas simples: `F1`, `F12`, etc.
+- Combinaciones: `CommandOrControl+Shift+I`, `Alt+Tab`, etc.
+- Se recomienda evitar hotkeys que puedan conflictuar con el juego
+
 ## Rendimiento y seguridad
 
 - Minimizar impacto en FPS: render ligero, throttling y lazy-load de UI
