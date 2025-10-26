@@ -2,13 +2,13 @@
 
 This document provides practical examples of using the Tornado MCP Client in different scenarios.
 
-## Example 1: Basic Setup with Hollow Knight MCP
+## Example 1: Basic Setup with Anthropic (Claude)
 
 ```typescript
 import { MCPClient } from './src/main/mcp';
 import type { MCPClientConfig } from './src/shared/mcp-types';
 
-// Configure the client
+// Configure the client with Anthropic
 const config: MCPClientConfig = {
   mode: 'api-key',
   aiModel: {
@@ -48,6 +48,60 @@ await mcpClient.initialize();
 
 console.log('MCP Client initialized!');
 console.log('Available tools:', mcpClient.getAllTools());
+```
+
+## Example 1b: Using GitHub Models API (GitHub Copilot)
+
+```typescript
+// Configure the client with GitHub Models API
+// Get your GitHub token from: https://github.com/settings/tokens
+const githubConfig: MCPClientConfig = {
+  mode: 'api-key',
+  aiModel: {
+    provider: 'github-copilot',
+    model: 'gpt-4o',  // or 'gpt-4o-mini', 'gpt-4-turbo'
+    apiKey: process.env.GITHUB_TOKEN!,  // GitHub Personal Access Token
+    maxTokens: 4096,
+    temperature: 1.0,
+  },
+  sampling: {
+    strategy: 'full',
+    maxTokens: 1000,
+  },
+  servers: [
+    /* ... */
+  ],
+};
+
+const client = new MCPClient(githubConfig);
+await client.initialize();
+```
+
+## Example 1c: Using OpenAI
+
+```typescript
+// Configure the client with OpenAI
+const openaiConfig: MCPClientConfig = {
+  mode: 'api-key',
+  aiModel: {
+    provider: 'openai',
+    model: 'gpt-4-turbo-preview',  // or 'gpt-4', 'gpt-3.5-turbo'
+    apiKey: process.env.OPENAI_API_KEY!,
+    maxTokens: 4096,
+    temperature: 1.0,
+  },
+  sampling: {
+    strategy: 'full',
+    maxTokens: 1000,
+  },
+  servers: [
+    /* ... */
+  ],
+};
+
+const client = new MCPClient(openaiConfig);
+await client.initialize();
+```
 ```
 
 ## Example 2: Chat with Game Context

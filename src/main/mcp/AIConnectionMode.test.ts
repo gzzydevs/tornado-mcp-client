@@ -5,21 +5,84 @@ import { GitHubVSCodeConnectionMode } from './GitHubVSCodeConnectionMode';
 import type { AIModelConfig, ChatMessage } from '../../shared/mcp-types';
 
 describe('APIKeyConnectionMode', () => {
-  let config: AIModelConfig;
-  let connection: APIKeyConnectionMode;
+  describe('Anthropic provider', () => {
+    let config: AIModelConfig;
+    let connection: APIKeyConnectionMode;
 
-  beforeEach(() => {
-    config = {
-      provider: 'anthropic',
-      model: 'claude-3-5-sonnet-20241022',
-      apiKey: 'test-api-key',
-      maxTokens: 4096,
-      temperature: 1.0,
-    };
-    connection = new APIKeyConnectionMode(config);
+    beforeEach(() => {
+      config = {
+        provider: 'anthropic',
+        model: 'claude-3-5-sonnet-20241022',
+        apiKey: 'test-api-key',
+        maxTokens: 4096,
+        temperature: 1.0,
+      };
+      connection = new APIKeyConnectionMode(config);
+    });
+
+    it('should initialize successfully with Anthropic', async () => {
+      await expect(connection.initialize()).resolves.not.toThrow();
+      expect(connection.isConnected()).toBe(true);
+    });
   });
 
-  describe('initialize()', () => {
+  describe('OpenAI provider', () => {
+    let config: AIModelConfig;
+    let connection: APIKeyConnectionMode;
+
+    beforeEach(() => {
+      config = {
+        provider: 'openai',
+        model: 'gpt-4-turbo-preview',
+        apiKey: 'test-api-key',
+        maxTokens: 4096,
+        temperature: 1.0,
+      };
+      connection = new APIKeyConnectionMode(config);
+    });
+
+    it('should initialize successfully with OpenAI', async () => {
+      await expect(connection.initialize()).resolves.not.toThrow();
+      expect(connection.isConnected()).toBe(true);
+    });
+  });
+
+  describe('GitHub Copilot provider', () => {
+    let config: AIModelConfig;
+    let connection: APIKeyConnectionMode;
+
+    beforeEach(() => {
+      config = {
+        provider: 'github-copilot',
+        model: 'gpt-4o',
+        apiKey: 'test-github-token',
+        maxTokens: 4096,
+        temperature: 1.0,
+      };
+      connection = new APIKeyConnectionMode(config);
+    });
+
+    it('should initialize successfully with GitHub Copilot', async () => {
+      await expect(connection.initialize()).resolves.not.toThrow();
+      expect(connection.isConnected()).toBe(true);
+    });
+  });
+
+  describe('Common functionality', () => {
+    let config: AIModelConfig;
+    let connection: APIKeyConnectionMode;
+
+    beforeEach(() => {
+      config = {
+        provider: 'anthropic',
+        model: 'claude-3-5-sonnet-20241022',
+        apiKey: 'test-api-key',
+        maxTokens: 4096,
+        temperature: 1.0,
+      };
+      connection = new APIKeyConnectionMode(config);
+    });
+
     it('should throw error if no API key provided', async () => {
       const noKeyConfig = { ...config, apiKey: undefined };
       const noKeyConnection = new APIKeyConnectionMode(noKeyConfig);
@@ -29,13 +92,6 @@ describe('APIKeyConnectionMode', () => {
       );
     });
 
-    it('should initialize successfully with valid API key', async () => {
-      await expect(connection.initialize()).resolves.not.toThrow();
-      expect(connection.isConnected()).toBe(true);
-    });
-  });
-
-  describe('getConfig() and updateConfig()', () => {
     it('should return current config', () => {
       const currentConfig = connection.getConfig();
       expect(currentConfig).toEqual(config);
@@ -46,9 +102,7 @@ describe('APIKeyConnectionMode', () => {
       const updatedConfig = connection.getConfig();
       expect(updatedConfig.temperature).toBe(0.5);
     });
-  });
 
-  describe('isConnected()', () => {
     it('should return false before initialization', () => {
       expect(connection.isConnected()).toBe(false);
     });

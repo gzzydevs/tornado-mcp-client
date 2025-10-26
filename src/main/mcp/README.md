@@ -22,8 +22,9 @@ The MCP core client handles:
 ### Connection Modes
 
 #### API Key Mode
-Direct connection to AI models using API keys.
+Direct connection to AI models using API keys. Supports multiple providers:
 
+**Anthropic (Claude)**
 ```typescript
 const config: MCPClientConfig = {
   mode: 'api-key',
@@ -40,6 +41,45 @@ const config: MCPClientConfig = {
   },
   servers: [],
 };
+```
+
+**OpenAI (GPT-4, GPT-3.5)**
+```typescript
+const config: MCPClientConfig = {
+  mode: 'api-key',
+  aiModel: {
+    provider: 'openai',
+    model: 'gpt-4-turbo-preview',
+    apiKey: process.env.OPENAI_API_KEY,
+    maxTokens: 4096,
+    temperature: 1.0,
+  },
+  sampling: {
+    strategy: 'full',
+    maxTokens: 1000,
+  },
+  servers: [],
+};
+```
+
+**GitHub Models API (with GitHub token)**
+```typescript
+const config: MCPClientConfig = {
+  mode: 'api-key',
+  aiModel: {
+    provider: 'github-copilot',
+    model: 'gpt-4o',  // GitHub provides access to various models
+    apiKey: process.env.GITHUB_TOKEN,  // GitHub Personal Access Token
+    maxTokens: 4096,
+    temperature: 1.0,
+  },
+  sampling: {
+    strategy: 'full',
+    maxTokens: 1000,
+  },
+  servers: [],
+};
+```
 
 const client = new MCPClient(config);
 await client.initialize();
