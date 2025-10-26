@@ -37,15 +37,17 @@ Tornado es una app Electron con React + TypeScript. La ventana del overlay es tr
 flowchart LR
   U[Usuario] --> HK[Hotkeys Globales]
   HK --> M[Electron Main]
-  M <--> R[Renderer (React Overlay)]
-  R -->|Interacción| CB[Context Bundler]
+  M --> R[Renderer React Overlay]
+  R --> M
+  R -->|Interaccion| CB[Context Bundler]
   CB --> SF[Savefile Cache]
   CB --> SS[Screenshots Cache]
   CB --> GD[Guide Chunks]
-  M <--> CM[MCP Connection Manager]
-  CM <--> S1[MCP Juego A]
-  CM <--> S2[MCP Juego B]
-  CM --> AI[Modelos IA (OpenAI/Anthropic/Local)]
+  M --> CM[MCP Connection Manager]
+  CM --> M
+  CM --> S1[MCP Juego A]
+  CM --> S2[MCP Juego B]
+  CM --> AI[Modelos IA OpenAI/Anthropic/Local]
   DB[(SQLite)]
   SF --- DB
   SS --- DB
@@ -150,4 +152,4 @@ Licencia dual:
 - Licencia comercial (ver `LICENSE-COMMERCIAL.md`)
 Incluye Excepción de Uso Personal No Comercial (detallada en `LICENSE.md`).
 
-Para licencias comerciales: comercial@gzzydevs.com
+Para licencias comerciales: barbycus@gmail.com
