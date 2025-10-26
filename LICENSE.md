@@ -15,7 +15,7 @@ Al usar este software, te acoges a UNA de las siguientes opciones:
 
 2) Licencia Comercial de Tornado
 - Requerida para empresas, estudios de videojuegos y cualquier uso comercial o propietario que NO quiera cumplir la AGPL (por ejemplo, integraciones cerradas, uso interno empresarial, distribución sin publicar el código).
-- Contacto para licencias comerciales: comercial@gzzydevs.com
+- Contacto para licencias comerciales: barbycus@gmail.com
 
 3) Excepción de Uso Personal No Comercial
 Concedemos, además, el siguiente permiso adicional:
