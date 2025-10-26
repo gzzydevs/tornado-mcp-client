@@ -262,9 +262,14 @@ class MCPConnection {
           mimeType: resource.mimeType,
         }));
       } catch (error) {
-        // Some servers may not support resources
-        console.log(`Server ${this.config.id} does not support resources`);
+        // Some servers may not support resources - this is expected behavior
+        // Log as debug info but don't treat as error
+        console.debug(`Server ${this.config.id} does not support resources capability`);
         this.state.resources = [];
+        // Optionally store in server info that resources are not supported
+        if (this.state.info) {
+          this.state.info.capabilities.resources = undefined;
+        }
       }
 
       this.state.status = 'connected';

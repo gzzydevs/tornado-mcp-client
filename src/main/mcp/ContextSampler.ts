@@ -131,8 +131,8 @@ export class ContextSampler {
   ): Promise<{ data: string; tokens: number }> {
     // For screenshots, we typically send the full image or none
     // Image tokens are calculated differently by the model
-    // For now, we'll use a fixed token estimate for images
-    const imageTokens = 1000; // Rough estimate for a screenshot
+    // Estimate based on image size (rough approximation: 1 token per 750 bytes for images)
+    const imageTokens = Math.ceil(screenshot.sizeBytes / 750);
 
     if (imageTokens <= maxTokens) {
       return {
