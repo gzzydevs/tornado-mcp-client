@@ -13,6 +13,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   -webkit-app-region: no-drag;
+  pointer-events: auto;
 }
 
 .App-header h1 {
@@ -24,6 +25,12 @@
   font-size: 1.2em;
   color: #888;
   margin-bottom: 1.5rem;
+}
+
+.overlay-info {
+  font-size: 0.9em !important;
+  color: #64ff64 !important;
+  margin-top: 1rem !important;
 }
 
 .card {
