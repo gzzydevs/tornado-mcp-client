@@ -91,8 +91,11 @@ release
 
 # TypeScript compiled output in source directories
 src/**/*.js
-src/**/*.d.ts
 !src/**/*.config.js
+
+# Exception: Keep source .d.ts files (they're part of TypeScript source code)
+# but exclude generated ones in dist/
+dist/**/*.d.ts
 
 # Gatsby files
 .cache/
