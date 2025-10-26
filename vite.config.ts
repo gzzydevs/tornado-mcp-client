@@ -24,7 +24,7 @@ export default defineConfig({
         }
       },
       {
-        // Preload script (optional, for secure communication)
+        // Preload script
         entry: 'src/main/preload.ts',
         onstart(args) {
           args.reload();

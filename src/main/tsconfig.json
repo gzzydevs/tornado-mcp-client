@@ -3,9 +3,14 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "../../dist/main",
-    "module": "commonjs",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
     "types": ["node"],
-    "noEmit": false
+    "noEmit": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler"
   },
   "include": ["./**/*"],
   "exclude": ["node_modules"]
