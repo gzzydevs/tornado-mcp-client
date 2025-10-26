@@ -1,0 +1,146 @@
+// API Key connection mode implementation using Anthropic SDK
+import Anthropic from '@anthropic-ai/sdk';
+import { AIConnectionMode, type AIResponse } from './AIConnectionMode';
+import type { AIModelConfig, ChatMessage, SampledContext } from '../../shared/mcp-types';
+
+/**
+ * API Key based connection mode for direct model access
+ * Supports Anthropic Claude models with direct API key authentication
+ */
+export class APIKeyConnectionMode extends AIConnectionMode {
+  private client: Anthropic | null = null;
+  private connected: boolean = false;
+
+  constructor(config: AIModelConfig) {
+    super(config);
+  }
+
+  async initialize(): Promise<void> {
+    if (!this.config.apiKey) {
+      throw new Error('API key is required for API key connection mode');
+    }
+
+    try {
+      this.client = new Anthropic({
+        apiKey: this.config.apiKey,
+        baseURL: this.config.baseUrl,
+      });
+      this.connected = true;
+      console.log('API Key connection mode initialized successfully');
+    } catch (error) {
+      this.connected = false;
+      throw new Error(`Failed to initialize API key connection: ${error}`);
+    }
+  }
+
+  async sendChatRequest(
+    messages: ChatMessage[],
+    context?: SampledContext
+  ): Promise<AIResponse> {
+    if (!this.client || !this.connected) {
+      throw new Error('Client not initialized. Call initialize() first.');
+    }
+
+    try {
+      // Build system message with context if available
+      const systemMessage = this.buildSystemMessage(context);
+
+      // Convert our message format to Anthropic format
+      const anthropicMessages = messages.map(msg => ({
+        role: msg.role === 'system' ? 'user' : msg.role as 'user' | 'assistant',
+        content: msg.content,
+      }));
+
+      // Call Anthropic API
+      const response = await this.client.messages.create({
+        model: this.config.model || 'claude-3-5-sonnet-20241022',
+        max_tokens: this.config.maxTokens || 4096,
+        temperature: this.config.temperature || 1.0,
+        system: systemMessage,
+        messages: anthropicMessages,
+      });
+
+      // Extract content from response
+      const content = response.content
+        .filter(block => block.type === 'text')
+        .map(block => 'text' in block ? block.text : '')
+        .join('\n');
+
+      // Extract tool calls if any
+      const toolCalls = response.content
+        .filter(block => block.type === 'tool_use')
+        .map(block => {
+          if (block.type === 'tool_use') {
+            return {
+              serverId: 'default', // Will need to be mapped properly
+              toolName: block.name,
+              arguments: block.input as Record<string, unknown>,
+            };
+          }
+          return null;
+        })
+        .filter((call): call is NonNullable<typeof call> => call !== null);
+
+      return {
+        content,
+        toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+        stopReason: response.stop_reason as AIResponse['stopReason'],
+      };
+    } catch (error) {
+      console.error('Error sending chat request:', error);
+      throw new Error(`Failed to send chat request: ${error}`);
+    }
+  }
+
+  isConnected(): boolean {
+    return this.connected;
+  }
+
+  async disconnect(): Promise<void> {
+    this.client = null;
+    this.connected = false;
+    console.log('API Key connection mode disconnected');
+  }
+
+  /**
+   * Build system message with context information
+   */
+  private buildSystemMessage(context?: SampledContext): string {
+    const parts: string[] = [
+      'You are an AI assistant for game overlay support. You have access to game-specific tools and context.',
+    ];
+
+    if (!context) {
+      return parts.join('\n\n');
+    }
+
+    if (context.savefile) {
+      parts.push(
+        '## Savefile Data',
+        'Current game save information:',
+        JSON.stringify(context.savefile.data, null, 2)
+      );
+    }
+
+    if (context.screenshot) {
+      parts.push(
+        '## Screenshot',
+        'A screenshot of the current game state is available for analysis.'
+      );
+    }
+
+    if (context.guide && context.guide.chunks.length > 0) {
+      parts.push(
+        '## Game Guide',
+        'Relevant guide sections:',
+        context.guide.chunks.join('\n\n')
+      );
+    }
+
+    parts.push(
+      `\nTotal context tokens: ${context.totalTokens}`
+    );
+
+    return parts.join('\n\n');
+  }
+}
