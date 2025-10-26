@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { OverlayConfig, MonitorInfo } from '../shared/types';
 import './OverlayControls.css';
 
@@ -11,6 +11,7 @@ const OverlayControls: React.FC = () => {
   });
   const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const opacityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Load initial configuration
@@ -27,12 +28,27 @@ const OverlayControls: React.FC = () => {
     };
     
     loadConfig();
+    
+    // Cleanup timeout on unmount
+    return () => {
+      if (opacityTimeoutRef.current) {
+        clearTimeout(opacityTimeoutRef.current);
+      }
+    };
   }, []);
 
-  const handleOpacityChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOpacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const opacity = parseInt(e.target.value);
     setConfig({ ...config, opacity });
-    await window.electronAPI.overlay.setOpacity(opacity);
+    
+    // Debounce IPC call to avoid performance issues during dragging
+    if (opacityTimeoutRef.current) {
+      clearTimeout(opacityTimeoutRef.current);
+    }
+    
+    opacityTimeoutRef.current = setTimeout(async () => {
+      await window.electronAPI.overlay.setOpacity(opacity);
+    }, 50); // 50ms debounce
   };
 
   const handleClickThroughToggle = async () => {

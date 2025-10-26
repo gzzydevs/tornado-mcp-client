@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import type { OverlayConfig, MonitorInfo } from '../shared/types';
 
-// Para ES modules necesitamos recrear __dirname
+// For ES modules we need to recreate __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -91,10 +91,11 @@ ipcMain.handle('overlay:set-always-on-top', (_event, enabled: boolean) => {
 
 ipcMain.handle('overlay:get-monitors', () => {
   const displays = screen.getAllDisplays();
+  const primaryDisplay = screen.getPrimaryDisplay();
   const monitors: MonitorInfo[] = displays.map((display, index) => ({
     id: index,
     bounds: display.bounds,
-    isPrimary: display.bounds.x === 0 && display.bounds.y === 0,
+    isPrimary: display.id === primaryDisplay.id,
   }));
   return monitors;
 });
