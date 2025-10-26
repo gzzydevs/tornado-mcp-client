@@ -11,7 +11,7 @@ const OverlayControls: React.FC = () => {
   });
   const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const opacityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const opacityTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     // Load initial configuration
@@ -46,8 +46,8 @@ const OverlayControls: React.FC = () => {
       clearTimeout(opacityTimeoutRef.current);
     }
     
-    opacityTimeoutRef.current = setTimeout(async () => {
-      await window.electronAPI.overlay.setOpacity(opacity);
+    opacityTimeoutRef.current = setTimeout(() => {
+      window.electronAPI.overlay.setOpacity(opacity);
     }, 50); // 50ms debounce
   };
 
