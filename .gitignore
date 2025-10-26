@@ -81,6 +81,21 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist-electron
+
+# Electron build output
+release
+*.exe
+*.dmg
+*.AppImage
+
+# TypeScript compiled output in source directories
+src/**/*.js
+!src/**/*.config.js
+
+# Exception: Keep source .d.ts files (they're part of TypeScript source code)
+# but exclude generated ones in dist/
+dist/**/*.d.ts
 
 # Gatsby files
 .cache/
@@ -137,3 +152,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# TypeScript compiled config files
+vite.config.js
+!vite.config.ts

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../../dist/main",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "noEmit": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler"
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules"]
+}
