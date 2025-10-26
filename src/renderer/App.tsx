@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import OverlayControls from './OverlayControls';
+import HotkeySettings from './HotkeySettings';
 import './App.css';
 
 function App() {
@@ -27,6 +28,8 @@ function App() {
           🎮 Transparent overlay with click-through support
         </p>
       </header>
+      
+      <HotkeySettings />
     </div>
   );
 }
