@@ -112,6 +112,10 @@ const createWindow = () => {
   // Set initial opacity
   mainWindow.setOpacity(overlayConfig.opacity / 100);
 
+  // Debug: log preload path
+  console.log('Preload script path:', join(__dirname, 'preload.js'));
+  console.log('Current __dirname:', __dirname);
+
   // In development, load from Vite dev server
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);

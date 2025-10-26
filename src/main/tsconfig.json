@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "../../dist/main",
+    "rootDir": "..",
     "module": "ESNext",
     "target": "ES2023",
     "lib": ["ES2023"],
@@ -12,6 +13,6 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "bundler"
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "../shared/**/*"],
   "exclude": ["node_modules"]
 }

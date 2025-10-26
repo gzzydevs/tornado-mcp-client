@@ -7,6 +7,6 @@
     "types": ["vite/client"],
     "noEmit": false
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "../shared/**/*"],
   "exclude": ["node_modules"]
 }
